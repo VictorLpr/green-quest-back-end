@@ -31,16 +31,16 @@ router.get('/:username', filterByUsername, async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const {firstName, lastName, username, email, password, city } = req.body;
-        const cityQuery = `SELECT id FROM cities WHERE title = $1`;
-        const cityId = await db.query(cityQuery, [city]);
-        if (cityId.rows[0]) {
-            cityId = cityId.rows[0];
+        const cityQuery = await db.query(`SELECT id FROM cities WHERE title = $1`, [city]);
+        let cityId;
+        if (cityQuery.rows[0]) {
+            cityId = cityQuery.rows[0].id;
         } else {
             const createCity = await db.query(
                 `INSERT INTO cities (title) VALUES ($1) RETURNING id`,
                 [city]
             );
-            cityId = createCity.rows[0];
+            cityId = createCity.rows[0].id;
         }
         const result = await db.query(
             `INSERT INTO volunteers (firstname, lastname, username, email, password, city_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
