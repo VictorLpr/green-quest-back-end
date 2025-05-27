@@ -4,8 +4,7 @@ const db = require('../db')
 
 router.get("/", async (req, res) => {
     const result = await db.query("SELECT * FROM associations")
-    console.log(result.rows);
-    res.sendStatus(200)
+    res.status(200).send(result.rows)
 })
 
 module.exports = router;
