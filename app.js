@@ -4,14 +4,16 @@ const cors = require("cors");
 require('dotenv').config()
 
 const volunteersRoutes = require('./routes/volunteers');
+const associationsRoutes = require('./routes/associations');
+
 app.use(cors());
 app.use(express.json());
 
-const port =  5000;
+const port = 5000;
 
-app.use('/volunteers', volunteersRoutes )
+app.use('/volunteers', volunteersRoutes)
 
-
+app.use('/associations', associationsRoutes)
 
 
 
