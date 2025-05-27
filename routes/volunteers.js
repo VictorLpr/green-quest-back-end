@@ -4,10 +4,11 @@ const db = require('../db')
 
 const filterByUsername = async (req, res, next) => {
     const username = req.params.username;
+    console.log(username)
     try {
-        const values = [username]
         let baseQuery = 'SELECT * FROM volunteers WHERE username = $1'
-        const result = await db.query(baseQuery, values)
+        const result = await db.query(baseQuery, [username])
+        console.log(result.rows)
         if (result.rows[0]) {
             req.findUser = result.rows[0]
             next()
@@ -51,3 +52,5 @@ router.post('/', async (req, res) => {
         res.sendStatus(500);
     }
 })
+
+module.exports = router;
