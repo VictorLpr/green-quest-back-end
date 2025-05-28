@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../db')
+const db = require('../db');
+const  hashPassword  = require('../utils/helpers');
 
 const filterByUsername = async (req, res, next) => {
     const username = req.params.username;
@@ -42,13 +43,17 @@ router.post('/', async (req, res) => {
             );
             cityId = createCity.rows[0].id;
         }
+        console.log(cityId)
+        const hashedPassword = await hashPassword(password);
+        // console.log(hashedPassword)
         const result = await db.query(
             `INSERT INTO volunteers (firstname, lastname, username, email, password, city_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [firstName, lastName, username, email, password, cityId]
+            [firstName, lastName, username, email, hashedPassword, cityId]
         )
         res.status(201).json(result.rows[0])
 
     } catch (err) {
+        console.error('Erreur serveur:', err);
         res.sendStatus(500);
     }
 })
