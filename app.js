@@ -9,7 +9,7 @@ const associationsRoutes = require('./routes/associations');
 app.use(cors());
 app.use(express.json());
 
-const port = 5000;
+const port = 5001;
 
 app.use('/volunteers', volunteersRoutes)
 
