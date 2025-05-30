@@ -5,6 +5,7 @@ require('dotenv').config()
 
 const volunteersRoutes = require('./routes/volunteers');
 const associationsRoutes = require('./routes/associations');
+const collectionsRoutes = require('./routes/collections');
 
 app.use(cors());
 app.use(express.json());
@@ -15,8 +16,7 @@ app.use('/volunteers', volunteersRoutes)
 
 app.use('/associations', associationsRoutes)
 
-
-
+app.use('/collections', collectionsRoutes)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
