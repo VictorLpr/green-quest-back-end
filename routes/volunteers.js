@@ -2,24 +2,10 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db');
 const  hashPassword  = require('../utils/helpers');
+const filterByUsername = require('../utils/middleware');
+const getOrCreateCity = require('../utils/middleware');
 
-const filterByUsername = async (req, res, next) => {
-    const username = req.params.username;
-    console.log(username)
-    try {
-        let baseQuery = 'SELECT * FROM volunteers WHERE username = $1'
-        const result = await db.query(baseQuery, [username])
-        console.log(result.rows)
-        if (result.rows[0]) {
-            req.findUser = result.rows[0]
-            next()
-        } else {
-            res.sendStatus(404)
-        }
-    } catch (err) {
-        res.sendStatus(500)
-    }
-}
+
 
 
 
@@ -29,20 +15,9 @@ router.get('/:username', filterByUsername, async (req, res) => {
 
 })
 
-router.post('/', async (req, res) => {
+router.post('/',getOrCreateCity, async (req, res) => {
     try {
-        const {firstName, lastName, username, email, password, city } = req.body;
-        const cityQuery = await db.query(`SELECT id FROM cities WHERE title = $1`, [city]);
-        let cityId;
-        if (cityQuery.rows[0]) {
-            cityId = cityQuery.rows[0].id;
-        } else {
-            const createCity = await db.query(
-                `INSERT INTO cities (title) VALUES ($1) RETURNING id`,
-                [city]
-            );
-            cityId = createCity.rows[0].id;
-        }
+        const {firstName, lastName, username, email, password, cityId} = req.body;
         console.log(cityId)
         const hashedPassword = await hashPassword(password);
         // console.log(hashedPassword)
