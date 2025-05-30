@@ -2,9 +2,11 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db')
 
-router.post('/', ddfiujhf, async (req, res) => {
+const getOrCreateCity = require('../utils/middleware')
+
+router.post('/', getOrCreateCity, async (req, res) => {
     try {
-        const {volunteerId, quantitiesArray} = req.body;
+        const {volunteerId, quantitiesArray, cityId} = req.body;
         // quantitiesArray [
         //    {
         //         "wasteId": "_",
@@ -13,10 +15,6 @@ router.post('/', ddfiujhf, async (req, res) => {
         //     },
         //     ...
         // ]
-
-        const cityId = 1;
-
-        //////  date !!!!!!
 
         // add collection
         const insertCollectionQuery = `INSERT INTO collections (volunteer_id, city_id) VALUES ($1, $2) RETURNING id, created_at`;
