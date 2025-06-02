@@ -7,7 +7,7 @@ const volunteersRoutes = require('./routes/volunteers');
 const associationsRoutes = require('./routes/associations');
 const donationsRoutes = require('./routes/donations');
 const collectionsRoutes = require('./routes/collections');
-const dashboardRoutes = require('./routes/dashboard');
+const wastesRoutes = require('./routes/wastes');
 
 app.use(cors());
 app.use(express.json());
@@ -22,7 +22,7 @@ app.use('/donations', donationsRoutes)
 
 app.use('/collections', collectionsRoutes)
 
-app.use('/dashboard', dashboardRoutes)
+app.use('/wastes', wastesRoutes)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
