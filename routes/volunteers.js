@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
     res.status(200).send(result.rows)
 })
 
-router.delete('/', filterByUsername, async (req, res) => {
+router.delete('/:username', filterByUsername, async (req, res) => {
     try {
         const userId = req.findUser.id
         console.log(userId)
