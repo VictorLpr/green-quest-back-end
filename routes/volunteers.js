@@ -3,7 +3,7 @@ const router = express.Router()
 const db = require('../db');
 const  hashPassword  = require('../utils/helpers');
 const filterByUsername = require('../utils/middleware');
-const getOrCreateCity = require('../utils/middleware');
+const getOrCreateCity = require('../utils/city');
 
 
 
