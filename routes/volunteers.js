@@ -17,13 +17,13 @@ router.get('/:username', filterByUsername, async (req, res) => {
 
 router.post('/',getOrCreateCity, async (req, res) => {
     try {
-        const {firstName, lastName, username, email, password, cityId} = req.body;
+        const {firstname, lastname, username, email, password, cityId} = req.body;
         console.log(cityId)
         const hashedPassword = await hashPassword(password);
         // console.log(hashedPassword)
         const result = await db.query(
             `INSERT INTO volunteers (firstname, lastname, username, email, password, city_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [firstName, lastName, username, email, hashedPassword, cityId]
+            [firstname, lastname, username, email, hashedPassword, cityId]
         )
         res.status(201).json(result.rows[0])
 
