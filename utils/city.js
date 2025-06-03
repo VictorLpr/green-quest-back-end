@@ -2,6 +2,9 @@ const db = require('../db');
 
 const getOrCreateCity = async (req, res, next) => {
     try {
+        if(!req.body.city) {
+            next()
+        }
         const {title, zipcode, lat, lng} = req.body.city
         const cityQuery = await db.query(`SELECT id FROM cities WHERE title = $1 and zipcode = $2`, [title, zipcode]);
         let cityId;
