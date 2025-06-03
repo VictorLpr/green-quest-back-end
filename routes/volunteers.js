@@ -5,6 +5,7 @@ const hashPassword = require('../utils/helpers');
 const filterByUsername = require('../utils/middleware');
 const getOrCreateCity = require('../utils/city');
 
+const bcrypt = require('bcrypt');
 
 
 
@@ -53,5 +54,34 @@ router.delete('/:username', filterByUsername, async (req, res) => {
 })
 
 
+
+
+
+
+
+
+
+
+
+
+router.post("/login", async (req, res) => {
+    const {username, passwordToCheck} = req.body;
+    try {
+        const getUserPassword = `SELECT password, id FROM volunteers WHERE volunteers.username = $1`;
+        const getPassword = await db.query(getUserPassword, [username]);
+        const password = getPassword.rows[0].password;
+        const userId = getPassword.rows[0].id;
+
+        const autentification = await bcrypt.compare(passwordToCheck, password);
+
+        if (!autentification) {
+            res.status(401).json({ message: "Invalid username or password"});
+        };
+        
+        res.status(200).json({currentUser: username, userId: userId});
+    } catch (err) {
+        res.status(500).send({error: err.message});
+    }
+});
 
 module.exports = router;
