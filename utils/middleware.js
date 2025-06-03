@@ -20,15 +20,15 @@ const filterByUsername = async (req, res, next) => {
 
 const getOrCreateCity = async (req, res, next) => {
     try {
-        const {city, zipcode} = req.body
-        const cityQuery = await db.query(`SELECT id FROM cities WHERE title = $1 and zipcode = $2`, [city, zipcode]);
+        const {title, zipcode, lat, lng} = req.body.city
+        const cityQuery = await db.query(`SELECT id FROM cities WHERE title = $1 and zipcode = $2`, [title, zipcode]);
         let cityId;
         if (cityQuery.rows[0]) {
             cityId = cityQuery.rows[0].id;
         } else {
             const createCityQuery = await db.query(
-                `INSERT INTO cities (title, zipcode) VALUES ($1, $2) RETURNING id`,
-                [city, zipcode]
+                `INSERT INTO cities (title, zipcode, lat, long) VALUES ($1, $2) RETURNING id`,
+                [title, zipcode, lat, lng]
             );
             cityId = createCityQuery.rows[0].id;
         }
