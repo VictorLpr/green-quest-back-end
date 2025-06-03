@@ -1,3 +1,5 @@
+const db = require('../db');
+
 const getOrCreateCity = async (req, res, next) => {
     try {
         const {title, zipcode, lat, lng} = req.body.city
@@ -7,7 +9,7 @@ const getOrCreateCity = async (req, res, next) => {
             cityId = cityQuery.rows[0].id;
         } else {
             const createCityQuery = await db.query(
-                `INSERT INTO cities (title, zipcode, lat, long) VALUES ($1, $2) RETURNING id`,
+                `INSERT INTO cities (title, zipcode, lat, long) VALUES ($1, $2, $3, $4) RETURNING id`,
                 [title, zipcode, lat, lng]
             );
             cityId = createCityQuery.rows[0].id;
