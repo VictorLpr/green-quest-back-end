@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../db');
-const  hashPassword  = require('../utils/helpers');
+const hashPassword = require('../utils/helpers');
 const filterByUsername = require('../utils/middleware');
 const getOrCreateCity = require('../utils/city');
 
@@ -10,12 +10,10 @@ const getOrCreateCity = require('../utils/city');
 
 
 router.get('/:username', filterByUsername, async (req, res) => {
-
-     res.send(req.findUser)
-
+    res.send(req.findUser)
 })
 
-router.post('/',getOrCreateCity, async (req, res) => {
+router.post('/', getOrCreateCity, async (req, res) => {
     try {
         const {firstname, lastname, username, email, password, cityId} = req.body;
         console.log(cityId)
@@ -32,5 +30,28 @@ router.post('/',getOrCreateCity, async (req, res) => {
         res.sendStatus(500);
     }
 })
+
+
+router.get("/", async (req, res) => {
+    const result = await db.query("SELECT * FROM volunteers")
+    res.status(200).send(result.rows)
+})
+
+router.delete('/', filterByUsername, async (req, res) => {
+    try {
+        const userId = req.findUser.id
+        console.log(userId)
+        const result = await db.query(
+            `DELETE FROM volunteers WHERE id=$1`,
+            [userId]
+        )
+        res.status(200).send(result.rows)
+    } catch (err) {
+        console.error('Erreur serveur:', err);
+        res.status(500).send()
+    }
+})
+
+
 
 module.exports = router;
