@@ -27,6 +27,11 @@ router.post('/', getOrCreateCity, async (req, res) => {
         res.status(201).json(result.rows[0])
 
     } catch (err) {
+        if (err.constraint == "volunteers_username_key") {
+            res.status(401).send("Pseudo déjà pris")
+        } else if (err.constraint == "volunteers_email_key") {
+            res.status(401).send("Cet email existe déjà")
+        }
         console.error('Erreur serveur:', err);
         res.sendStatus(500);
     }
@@ -62,12 +67,12 @@ router.patch('/:id', getOrCreateCity, async (req, res) => {
             delete userUpdate.city;
             userUpdate["city_id"] = userUpdate.cityId
             delete userUpdate.cityId
-        } 
+        }
 
         if (userUpdate.password) {
             userUpdate.password = await hashPassword(userUpdate.password)
         }
-        
+
         let updateQuery = `UPDATE volunteers SET`
         let values = []
         for (const [key, value] of Object.entries(userUpdate)) {
@@ -75,7 +80,7 @@ router.patch('/:id', getOrCreateCity, async (req, res) => {
             updateQuery += ` ${key} = $${values.length},`;
         }
         updateQuery += ` updated_at = NOW() WHERE id = $${values.length + 1};`
-        const result = await db.query(updateQuery,[...values, userId])
+        const result = await db.query(updateQuery, [...values, userId])
         res.sendStatus(200)
 
     } catch (err) {
@@ -87,7 +92,7 @@ router.patch('/:id', getOrCreateCity, async (req, res) => {
         console.error(err)
         res.status(500).send()
     }
-})  
+})
 
 
 
@@ -99,7 +104,7 @@ router.patch('/:id', getOrCreateCity, async (req, res) => {
 
 
 router.post("/login", async (req, res) => {
-    const {username, passwordToCheck} = req.body;
+    const { username, passwordToCheck } = req.body;
     try {
         const getUserPassword = `SELECT password, id FROM volunteers WHERE volunteers.username = $1`;
         const getPassword = await db.query(getUserPassword, [username]);
@@ -109,12 +114,12 @@ router.post("/login", async (req, res) => {
         const autentification = await bcrypt.compare(passwordToCheck, password);
 
         if (!autentification) {
-            return res.status(401).json({ message: "Invalid username or password"});
+            return res.status(401).json({ message: "Invalid username or password" });
         };
-        
-        res.status(200).json({userName: username, userId: userId});
+
+        res.status(200).json({ userName: username, userId: userId });
     } catch (err) {
-        res.status(500).send({error: err.message});
+        res.status(500).send({ error: err.message });
     }
 });
 
