@@ -53,24 +53,38 @@ router.delete('/:username', filterByUsername, async (req, res) => {
     }
 })
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', getOrCreateCity, async (req, res) => {
     try {
         const userId = req.params.id
         const userUpdate = req.body
-        if (userUpdate.city) delete userUpdate.city;
-        console.log(userUpdate)
-        let updateQuery = `UPDATE volunteers SET`
-        for (const [key, value] of Object.entries(userUpdate)) {
-            updateQuery += ` ${key} = '${value}',`;
+
+        if (userUpdate.city) {
+            delete userUpdate.city;
+            userUpdate["city_id"] = userUpdate.cityId
+            delete userUpdate.cityId
+        } 
+
+        if (userUpdate.password) {
+            userUpdate.password = await hashPassword(userUpdate.password)
         }
-        updateQuery = updateQuery.slice(0,updateQuery.length -1 )
-        updateQuery += " WHERE id = $1;"
-        console.log(updateQuery)
-        const result = await db.query(updateQuery,[userId])
-        console.log(result.rows)
+        
+        let updateQuery = `UPDATE volunteers SET`
+        let values = []
+        for (const [key, value] of Object.entries(userUpdate)) {
+            values.push(value)
+            updateQuery += ` ${key} = $${values.length},`;
+        }
+        updateQuery += ` updated_at = NOW() WHERE id = $${values.length + 1};`
+        const result = await db.query(updateQuery,[...values, userId])
         res.sendStatus(200)
+
     } catch (err) {
-        console.error('Erreur serveur:', err);
+        if (err.constraint == "volunteers_username_key") {
+            res.status(401).send("Pseudo déjà pris")
+        } else if (err.constraint == "volunteers_email_key") {
+            res.status(401).send("Cet email existe déjà")
+        }
+        console.error(err)
         res.status(500).send()
     }
 })  
