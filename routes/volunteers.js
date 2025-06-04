@@ -95,10 +95,10 @@ router.post("/login", async (req, res) => {
         const autentification = await bcrypt.compare(passwordToCheck, password);
 
         if (!autentification) {
-            res.status(401).json({ message: "Invalid username or password"});
+            return res.status(401).json({ message: "Invalid username or password"});
         };
         
-        res.status(200).json({currentUser: username, userId: userId});
+        res.status(200).json({userName: username, userId: userId});
     } catch (err) {
         res.status(500).send({error: err.message});
     }
