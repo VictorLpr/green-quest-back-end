@@ -4,10 +4,17 @@ const db = require('../db')
 
 const getOrCreateCity = require('../utils/middleware')
 
+router.get('/:username/:date', async (req, res) => {
+    const { username, date } = req.params
+    const result = await db.query('SELECT SUM(q.quantity), w.title FROM quantities q LEFT JOIN wastes w ON q.waste_id = w.id LEFT JOIN collections c ON q.collection_id = c.id WHERE c.volunteer_id = $1 AND DATE_TRUNC("month", c.created_at) = $2 GROUP BY w.title;', [username, date])
+    res.status(200).send(result.rows)
+    console.log(result.rows)
+})
+
 router.post('/', getOrCreateCity, async (req, res) => {
     const client = await db.connect();
     try {
-        const {volunteerId, quantitiesArray, cityId} = req.body;
+        const { volunteerId, quantitiesArray, cityId } = req.body;
         // quantitiesArray [
         //    {
         //         "wasteId": "_",
@@ -19,13 +26,13 @@ router.post('/', getOrCreateCity, async (req, res) => {
 
         // check les entrées
         if (!volunteerId) {
-            return res.status(400).json({error : 'Volunteer id is missing'});
+            return res.status(400).json({ error: 'Volunteer id is missing' });
         };
         if (!Array.isArray(quantitiesArray) || quantitiesArray.length === 0) {
-            return res.status(400).json({error : 'Quantities are missing'});
+            return res.status(400).json({ error: 'Quantities are missing' });
         };
         if (!cityId) {
-            return res.status(400).json({error : 'City id is missing'});
+            return res.status(400).json({ error: 'City id is missing' });
         };
 
         // Lance les query
@@ -59,12 +66,12 @@ router.post('/', getOrCreateCity, async (req, res) => {
 
         for (const quantity of quantitiesArray) {
             await client.query(insertQuantityQuery, [quantity.quantity, quantity.wasteId, collectionId]);
-    
+
             const wastePoints = await client.query(selectWasteQuery, [quantity.wasteId]);
             pointsEarned += wastePoints.rows[0].points_value * quantity.quantity;
-    
+
             // faire le tableau : waste title, quantity
-            collectWastes.push({title: wastePoints.rows[0].title, quantity: quantity.quantity});
+            collectWastes.push({ title: wastePoints.rows[0].title, quantity: quantity.quantity });
         }
 
         totalPoints += pointsEarned;
