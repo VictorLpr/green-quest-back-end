@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db')
 
-const getOrCreateCity = require('../utils/middleware')
+const getOrCreateCity = require('../utils/city')
 
 router.get('/:id/:date', async (req, res) => { 
     const { id, date } = req.params
