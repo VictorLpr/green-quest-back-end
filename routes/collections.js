@@ -4,11 +4,10 @@ const db = require('../db')
 
 const getOrCreateCity = require('../utils/middleware')
 
-router.get('/:username/:date', async (req, res) => {
-    const { username, date } = req.params
-    const result = await db.query('SELECT SUM(q.quantity), w.title FROM quantities q LEFT JOIN wastes w ON q.waste_id = w.id LEFT JOIN collections c ON q.collection_id = c.id WHERE c.volunteer_id = $1 AND DATE_TRUNC("month", c.created_at) = $2 GROUP BY w.title;', [username, date])
+router.get('/:id/:date', async (req, res) => { 
+    const { id, date } = req.params
+    const result = await db.query(`SELECT SUM(q.quantity), w.title FROM quantities q LEFT JOIN wastes w ON q.waste_id = w.id LEFT JOIN collections c ON q.collection_id = c.id WHERE c.volunteer_id = $1 AND DATE_TRUNC('month', c.created_at) = $2 GROUP BY w.title;`, [id, date])
     res.status(200).send(result.rows)
-    console.log(result.rows)
 })
 
 router.post('/', getOrCreateCity, async (req, res) => {
