@@ -16,7 +16,7 @@ router.get('/:username', filterByUsername, async (req, res) => {
 
 router.post('/', getOrCreateCity, async (req, res) => {
     try {
-        const {firstname, lastname, username, email, password, cityId} = req.body;
+        const { firstname, lastname, username, email, password, cityId } = req.body;
         console.log(cityId)
         const hashedPassword = await hashPassword(password);
         // console.log(hashedPassword)
@@ -53,7 +53,27 @@ router.delete('/:username', filterByUsername, async (req, res) => {
     }
 })
 
-
+router.patch('/:id', async (req, res) => {
+    try {
+        const userId = req.params.id
+        const userUpdate = req.body
+        if (userUpdate.city) delete userUpdate.city;
+        console.log(userUpdate)
+        let updateQuery = `UPDATE volunteers SET`
+        for (const [key, value] of Object.entries(userUpdate)) {
+            updateQuery += ` ${key} = '${value}',`;
+        }
+        updateQuery = updateQuery.slice(0,updateQuery.length -1 )
+        updateQuery += " WHERE id = $1;"
+        console.log(updateQuery)
+        const result = await db.query(updateQuery,[userId])
+        console.log(result.rows)
+        res.sendStatus(200)
+    } catch (err) {
+        console.error('Erreur serveur:', err);
+        res.status(500).send()
+    }
+})  
 
 
 
