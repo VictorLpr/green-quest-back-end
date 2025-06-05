@@ -39,8 +39,13 @@ router.post('/', getOrCreateCity, async (req, res) => {
 
 
 router.get("/", async (req, res) => {
-    const result = await db.query("SELECT * FROM volunteers")
-    res.status(200).send(result.rows)
+    try {
+        const result = await db.query(" SELECT * FROM volunteers v join cities c ON v.city_id = c.id")
+        res.status(200).json(result.rows)
+    } catch (err) {
+        console.error(err)
+        res.status(500).send()
+    }
 })
 
 router.delete('/:username', filterByUsername, async (req, res) => {
@@ -93,7 +98,6 @@ router.patch('/:id', getOrCreateCity, async (req, res) => {
         res.status(500).send()
     }
 })
-
 
 
 
