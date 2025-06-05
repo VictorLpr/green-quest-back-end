@@ -89,13 +89,18 @@ router.post("/login", async (req, res) => {
     try {
         const getUserPassword = `SELECT password, id FROM volunteers WHERE volunteers.username = $1`;
         const getPassword = await db.query(getUserPassword, [username]);
+
+        if (getPassword.rowCount === 0) {
+            return res.status(401).json({ message: "Ce pseudo n'existe pas."});
+        }
+
         const password = getPassword.rows[0].password;
         const userId = getPassword.rows[0].id;
 
         const autentification = await bcrypt.compare(passwordToCheck, password);
 
         if (!autentification) {
-            return res.status(401).json({ message: "Invalid username or password"});
+            return res.status(401).json({ message: "Ce mot de passe est incorrect. Veuillez réessayer."});
         };
         
         res.status(200).json({userName: username, userId: userId});
