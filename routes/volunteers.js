@@ -8,8 +8,6 @@ const getOrCreateCity = require('../utils/city');
 const bcrypt = require('bcrypt');
 
 
-
-
 router.get('/:username', filterByUsername, async (req, res) => {
     res.send(req.findUser)
 })
@@ -63,7 +61,7 @@ router.delete('/:username', filterByUsername, async (req, res) => {
     }
 })
 
-router.patch('/:id', getOrCreateCity, async (req, res) => {
+router.patch('/update/:id', getOrCreateCity, async (req, res) => {
     try {
         const userId = req.params.id
         const userUpdate = req.body
@@ -98,14 +96,6 @@ router.patch('/:id', getOrCreateCity, async (req, res) => {
         res.status(500).send()
     }
 })
-
-
-
-
-
-
-
-
 
 router.post("/login", async (req, res) => {
     const { username, passwordToCheck } = req.body;
