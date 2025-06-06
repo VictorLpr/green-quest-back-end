@@ -25,7 +25,7 @@ app.use('/collections', collectionsRoutes)
 
 app.use('/wastes', wastesRoutes)
 
-app.use('/leaderboard', leaderboardRoutes)
+app.use('/leaderboard', leaderboardRoutes) 
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

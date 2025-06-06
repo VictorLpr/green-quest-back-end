@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
             `SELECT volunteers.username, SUM(donations.value) AS total
              FROM volunteers
              JOIN donations ON donations.volunteer_id = volunteers.id
-             GROUP BY volunteers.firstname
+             GROUP BY volunteers.username
              ORDER BY total DESC
             `
         ) 
