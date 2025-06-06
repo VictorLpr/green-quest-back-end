@@ -5,13 +5,13 @@ const db = require('../db')
 router.get('/', async (req, res) => {
     try {
         const getDonationByUser = await db.query(
-            `SELECT volunteers.firstname, SUM(donations.value) AS total
+            `SELECT volunteers.username, SUM(donations.value) AS total
              FROM volunteers
              JOIN donations ON donations.volunteer_id = volunteers.id
              GROUP BY volunteers.firstname
              ORDER BY total DESC
             `
-        )
+        ) 
 
         console.log(getDonationByUser.rows);
         const donationByUser = getDonationByUser.rows;
