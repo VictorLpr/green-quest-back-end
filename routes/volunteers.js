@@ -38,7 +38,8 @@ router.post('/', getOrCreateCity, async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const result = await db.query(" SELECT * FROM volunteers v join cities c ON v.city_id = c.id")
+        const result = await db.query(" SELECT v.id, v.firstname, v.lastname, v.username, v.email, c.title  FROM volunteers v join cities c ON v.city_id = c.id")
+        console.log(result.rows)
         res.status(200).json(result.rows)
     } catch (err) {
         console.error(err)
@@ -61,7 +62,7 @@ router.delete('/:username', filterByUsername, async (req, res) => {
     }
 })
 
-router.patch('/update/:id', getOrCreateCity, async (req, res) => {
+router.patch('/:id', getOrCreateCity, async (req, res) => {
     try {
         const userId = req.params.id
         const userUpdate = req.body
