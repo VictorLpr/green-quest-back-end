@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
              FROM volunteers
              JOIN donations ON donations.volunteer_id = volunteers.id
              GROUP BY volunteers.firstname
+             ORDER BY total DESC
             `
         )
 
