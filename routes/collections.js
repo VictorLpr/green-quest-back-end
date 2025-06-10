@@ -70,7 +70,7 @@ router.post('/', getOrCreateCity, async (req, res) => {
             pointsEarned += wastePoints.rows[0].points_value * quantity.quantity;
 
             // faire le tableau : waste title, quantity
-            collectWastes.push({ title: wastePoints.rows[0].title, quantity: quantity.quantity });
+            collectWastes.push({ title: wastePoints.rows[0].title, label: wastePoints.rows[0].label, quantity: quantity.quantity });
         }
 
         totalPoints += pointsEarned;
