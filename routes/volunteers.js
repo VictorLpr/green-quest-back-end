@@ -91,11 +91,11 @@ router.patch('/:id', getOrCreateCity, async (req, res) => {
         if (err.constraint == "volunteers_username_key") {
             res.status(401).send("Pseudo déjà pris")
         } else if (err.constraint == "volunteers_email_key") {
-            res.status(401).send("Cet email existe déjà")
+            res.status(401).send("Cet email existe déjà") 
         }
         console.error(err)
-        res.status(500).send()
-    }
+        res.status(500).send() 
+    } 
 })
 
 router.post("/login", async (req, res) => {
