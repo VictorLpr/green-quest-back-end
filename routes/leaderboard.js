@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
     } catch (err) {
         console.error('Erreur serveur:', err);
         res.sendStatus(500)
-    }
+    } 
 
 })
 
