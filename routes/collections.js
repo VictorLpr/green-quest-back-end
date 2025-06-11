@@ -44,7 +44,7 @@ router.post('/', getOrCreateCity, async (req, res) => {
         // add quantities
         const insertQuantityQuery = `INSERT INTO quantities (quantity, waste_id, collection_id) VALUES ($1, $2, $3)`;
         // get waste point value and title
-        const selectWasteQuery = `SELECT points_value, title FROM wastes WHERE id = $1`;
+        const selectWasteQuery = `SELECT points_value, title, label FROM wastes WHERE id = $1`;
         // get points volunteers already have
         const selectVolunteerPointsQuery = `SELECT points FROM volunteers WHERE id = $1`;
         // update volunteer / calculate total points
