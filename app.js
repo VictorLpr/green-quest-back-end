@@ -14,7 +14,7 @@ const citiesRoutes = require('./routes/cities');
 app.use(cors());
 app.use(express.json());
 
-const port = 5001;
+const port = process.env.PORT;
 
 app.use('/volunteers', volunteersRoutes)
 
